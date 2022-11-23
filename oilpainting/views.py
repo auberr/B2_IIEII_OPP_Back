@@ -32,6 +32,6 @@ class ArticleView(APIView):
         return Response(article_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        article_img = Image.objects.filter(img_user = request.user).last() #로그인 한 유저의 이미지 모델 중 최근 모델
+        article_img = Image.objects.filter(image_user = request.user).last() #로그인 한 유저의 이미지 모델 중 최근 모델
         article_img_serializer = ArticleImageSerializer(article_img)
         return Response(article_img_serializer.data, status = status.HTTP_200_OK)
