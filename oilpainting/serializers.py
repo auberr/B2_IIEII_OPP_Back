@@ -5,7 +5,7 @@ from oilpainting.models import Image, Article
 class InputImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fileds = ("input_image",)
+        fields = ("input_image",)
         
 class ArticleImageSerializer(serializers.ModelSerializer):
     class Meta:
