@@ -18,7 +18,9 @@ def styletransfer(idx, num):
         4:"starry_night.t7",
         5:"la_muse.t7",
         6:"the_scream.t7",
-        7:"udnie.t7"
+        7:"udnie.t7",
+        8:"composition_vii.t7",
+        9:"the_wave.t7"
         }
     
     dnn_model = dnn_models[int(num)]
@@ -44,11 +46,11 @@ def styletransfer(idx, num):
     output = np.clip(output, 0, 255)
     output = output.astype('uint8')
 
+    # 색 재배열
+    output = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
     # 이미지 저장하기 위해 np array를 이미지로 바꿔줌
     result_img = im.fromarray(output)
     
-
-    # RGB 배치 필요
     # 이미지저장, db에도 저장
     result_img.save(f'media/results/{idx}.jpg', "JPEG")
     target.output_image = f'results/{idx}.jpg'
