@@ -1,6 +1,9 @@
 import cv2
 import numpy as np
 from PIL import Image as im
+import os
+import django
+from oilpainting.models import Image
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wetyle_share.settings')
 django.setup()
@@ -48,5 +51,5 @@ def styletransfer(idx, num):
     # RGB 배치 필요
     # 이미지저장, db에도 저장
     result_img.save(f'media/results/{idx}.jpg', "JPEG")
-    target.output_image = f'media/results/{idx}.jpg'
+    target.output_image = f'results/{idx}.jpg'
     target.save()

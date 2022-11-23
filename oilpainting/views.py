@@ -2,9 +2,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Image
-from .serializers import InputImageSerializer
+from .serializers import InputImageSerializer,ArticleImageSerializer,ArticleCreateSerializer
 from nst import styletransfer
-# Create your views here.
 
 
 # 이미지 업로드 - 유화 변환 기능
@@ -22,3 +21,17 @@ class ImageUploadview(APIView):
             return Response("저장 완료", status=status.HTTP_200_OK)
         else:
             return Response("실패", status=status.HTTP_400_BAD_REQUEST)
+        
+class ArticleView(APIView):
+    def post(self, request):
+        article_serializer = ArticleCreateSerializer(data = request.data)
+        print(request.data)
+        if article_serializer.is_valid():
+            article_serializer.save(article_user = request.user)
+            return Response("저장완료", status=status.HTTP_201_CREATED)
+        return Response(article_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        article_img = Image.objects.filter(img_user = request.user).last() #로그인 한 유저의 이미지 모델 중 최근 모델
+        article_img_serializer = ArticleImageSerializer(article_img)
+        return Response(article_img_serializer.data, status = status.HTTP_200_OK)
