@@ -3,7 +3,7 @@ from users.serializers import UserSerializer, UserCreateSerializer, CustomTokenO
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from users.serializers import UserSerializer, CustomTokenObtainPairSerializer, UserprofileSerializer, UserprofileImageCreateSerializer
+from users.serializers import UserSerializer, CustomTokenObtainPairSerializer, UserprofileSerializer, UserprofileImageCreateSerializer, FollowSerializer
 from users.models import User
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.generics import get_object_or_404
@@ -116,8 +116,15 @@ class ProfileView(APIView):
         else:
             return Response({"message":f"${update_serializer.errors}"}, status=status.HTTP_400_BAD_REQUEST)
 
-
+# 팔로우 기능
 class FollowView(APIView):
+    # 팔로우 정보 테스트용
+    def get(self, request, user_id):
+        users = User.objects.all()
+        users_serializer = FollowSerializer(users, many=True)
+        return Response(users_serializer.data, status=status.HTTP_200_OK)
+    
+    # 팔로우/언팔로우 기능
     def post(self, request, user_id):
         person = get_object_or_404(User, id=user_id)
         if person.followers.filter(pk=request.user.pk).exists():
