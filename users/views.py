@@ -36,18 +36,26 @@ class UserCreateView(APIView):
 
 
 class UserAuthView(APIView):
+    def get(self, request):
+        # token 있는데 signin.html 접속할 때
+        try:
+            access_token = request.headers['Authorization']
+            if request.headers['Authorization'] is not None:
+                token = request.headers['Authorization']
+                refresh_token = str(token)
+                access_token = str(token)
+                
+                if access_token:
+                    return Response(
+                        {
+                            "refresh" : refresh_token,
+                            "access": access_token
+                        }, status=status.HTTP_200_OK)
+            
+        except:
+            return Response({"message": "KEY_ERROR"}, status=400)
+    
     def post(self, request):
-        # # token 있는데 signin.html 접속할 때
-        # token = request.headers['Authorization']
-        # refresh_token = str(token)
-        # access_token = str(token)
-        
-        # if access_token:
-        #     return Response(
-        #         {
-        #             "refresh" : refresh_token,
-        #             "access": access_token
-        #         }, status=status.HTTP_200_OK)
         
         # 존재하지 않는 유저일때
         exist_user = User.objects.filter(username=request.data['username'])
