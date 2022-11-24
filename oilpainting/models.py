@@ -15,3 +15,13 @@ class Article(models.Model):
     title = models.CharField(max_length=50)
     content = models.TextField()
     likes = models.ManyToManyField(User,related_name='liked_article')
+    
+class Comment(models.Model):
+    article_user = models.ForeignKey(User,on_delete=models.CASCADE)
+    article = models.ForeignKey(Article,on_delete=models.CASCADE)
+    content = models.TextField()
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return str(self.content)

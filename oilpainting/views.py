@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Image, Article
-from .serializers import InputImageSerializer,ArticleImageSerializer,ArticleCreateSerializer, ArticleSerializer,ArticleDetailSerializer
+from .serializers import InputImageSerializer,ArticleImageSerializer,ArticleCreateSerializer, ArticleSerializer,ArticleDetailSerializer,ArticleListSerializer,ArticleCommentSerializer,ArticleCommentCreateSerializer
 from nst import styletransfer
 
 
@@ -60,5 +60,42 @@ class MainView(APIView):
 class ArticleDetailView(APIView):
     def get(self, request, article_id):
         article = Article.objects.get(id= article_id)
-        article_serializer = ArticleDetailSerializer(article)
+        article_serializer = ArticleDetailSerializer(article)        
         return Response(article_serializer.data, status = status.HTTP_200_OK )
+    
+    def put(self, request, article_id):
+        article = get_object_or_404(Article,id=article_id)
+        article_serializer = ArticleCreateSerializer(article,data=request.data)
+        if request.user == article.article_user:
+            if article_serializer.is_valid():
+                article_serializer.save()
+                return Response(article_serializer.data,status=status.HTTP_200_OK)
+            else:
+                return Response(article_serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response("권한이 없습니다.",status=status.HTTP_403_FORBIDDEN)
+        
+    def delete(self,request,article_id):
+        article = get_object_or_404(Article,id=article_id)
+        if request.user == article.article_user:
+            article.delete()
+            return Response("삭제 되었습니다.",status=status.HTTP_200_OK)
+        else:
+            return Response("권한이 없습니다.",status=status.HTTP_403_FORBIDDEN)
+        
+class ArticleCommentView(APIView):
+    def get(self,request,article_id):
+        article = Article.objects.get(id=article_id)
+        comments = article.comment_set.all()
+        article_serializer = ArticleCommentSerializer(comments,many=True)
+        return Response(article_serializer.data,status=status.HTTP_200_OK)
+    
+    def post(self,request,article_id):
+        article_serializer = ArticleCommentCreateSerializer(data=request.data)
+        if article_serializer.is_valid():
+            article_serializer.save(user=request.user,article_id = article_id)
+            return Response(article_serializer.data,status=status.HTTP_201_CREATED)
+        else:
+            return Response(article_serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        
+        
