@@ -3,9 +3,8 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 class UserManager(BaseUserManager):
     def create_user(self, username, password=None):
-        # username로 회원가입
         if not username:
-            raise ValueError('Users must have an email address')
+            raise ValueError('Users must have an username')
 
         user = self.model(
             username = username,
@@ -26,7 +25,7 @@ class UserManager(BaseUserManager):
         return user
 
 class User(AbstractBaseUser):
-    username = models.CharField(max_length=50, blank=True, null=True, unique=True)
+    username = models.CharField(max_length=50, blank=False, null=True, unique=True)
     profile_img = models.ImageField(default='profile_image/profile_default.jpg', upload_to='profile_image')
 
     is_active = models.BooleanField(default=True)
@@ -37,8 +36,7 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = 'username'
 
     def __str__(self):
-        return self.email
-
+        return self.username
 
     # custom 유저모델을 기본 유저모델로 사용하기 위한 필수코드
     def has_perm(self, perm, obj=None): # 권한이 있는지
