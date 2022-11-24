@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
+        exclude = ('followings',)
 
     def create(self, validated_data):   
         user = super().create(validated_data)
@@ -48,3 +48,10 @@ class UserprofileImageCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("username", 'profile_img')
+        
+
+class FollowSerializer(serializers.ModelSerializer):
+    followings = UserSerializer(many=True)
+    class Meta:
+        model = User
+        fields = ("followings",)

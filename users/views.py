@@ -115,4 +115,14 @@ class ProfileView(APIView):
             return Response(update_serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({"message":f"${update_serializer.errors}"}, status=status.HTTP_400_BAD_REQUEST)
-        
+
+
+class FollowView(APIView):
+    def post(self, request, user_id):
+        person = get_object_or_404(User, id=user_id)
+        if person.followers.filter(pk=request.user.pk).exists():
+            person.followers.remove(request.user)
+            return Response("unfollow", status=status.HTTP_200_OK)
+        else:
+            person.followers.add(request.user)
+            return Response("follow", status=status.HTTP_200_OK)
