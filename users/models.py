@@ -38,6 +38,7 @@ class User(AbstractBaseUser):
     def __str__(self):
         return self.username
 
+
     # custom 유저모델을 기본 유저모델로 사용하기 위한 필수코드
     def has_perm(self, perm, obj=None): # 권한이 있는지
         return True
