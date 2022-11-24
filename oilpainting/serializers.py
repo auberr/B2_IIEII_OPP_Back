@@ -17,9 +17,6 @@ class ArticleCreateSerializer(serializers.ModelSerializer):
         model = Article
         fields = ['title','content','img']
 
-
-
-
 class ArticleListSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
 
@@ -34,8 +31,24 @@ class ArticleListSerializer(serializers.ModelSerializer):
     def get_likes_count(self, obj):
         return obj.likes.count()
 
-
     class Meta:
         model = Article
         # 3. likes_count : 좋아요 수 보여주는 필드 추가
         fields = ("article_user", "title", "content", "likes_count")
+        
+class ImageSerializer(serializers.ModelSerializer):
+   class Meta:
+        model = Image
+        fields = ['input_image','output_image']
+
+class ArticleSerializer(serializers.ModelSerializer): # main get
+    img = ImageSerializer()
+    class Meta:
+        model = Article
+        fields = ['id','img','article_user','likes']
+
+class ArticleDetailSerializer(serializers.ModelSerializer):
+    img = ImageSerializer()
+    class Meta:
+        model = Article
+        fields = '__all__'

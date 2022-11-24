@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Image, Article
-from .serializers import InputImageSerializer,ArticleImageSerializer,ArticleCreateSerializer
+from .serializers import InputImageSerializer,ArticleImageSerializer,ArticleCreateSerializer, ArticleSerializer,ArticleDetailSerializer
 from nst import styletransfer
 
 
@@ -49,3 +49,16 @@ class LikeView(APIView):
         else:
             article.likes.add(request.user)
             return Response("like", status=status.HTTP_200_OK)
+        
+
+class MainView(APIView):
+    def get(self, request):
+        articles = Article.objects.all()
+        article_serializer = ArticleSerializer(articles, many = True)
+        return Response(article_serializer.data, status = status.HTTP_200_OK )
+
+class ArticleDetailView(APIView):
+    def get(self, request, article_id):
+        article = Article.objects.get(id= article_id)
+        article_serializer = ArticleDetailSerializer(article)
+        return Response(article_serializer.data, status = status.HTTP_200_OK )
