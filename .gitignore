@@ -138,9 +138,10 @@ runs/
 0003_music_music_img.py
 recommend/
 media/
+models/
 .vscode/
 
 *.json
 
-musiclist/settings.py
+*.t7
 
