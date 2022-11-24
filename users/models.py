@@ -5,7 +5,7 @@ class UserManager(BaseUserManager):
     def create_user(self, username, password=None):
         # username로 회원가입
         if not username:
-            raise ValueError('Users must have an email address')
+            raise ValueError('Users must have an username')
 
         user = self.model(
             username = username,
@@ -37,7 +37,7 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = 'username'
 
     def __str__(self):
-        return self.email
+        return self.username
 
 
     # custom 유저모델을 기본 유저모델로 사용하기 위한 필수코드

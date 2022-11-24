@@ -1,7 +1,8 @@
+from rest_framework.generics import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Image
+from .models import Image, Article
 from .serializers import InputImageSerializer,ArticleImageSerializer,ArticleCreateSerializer
 from nst import styletransfer
 
@@ -35,3 +36,16 @@ class ArticleView(APIView):
         article_img = Image.objects.filter(image_user = request.user).last() #로그인 한 유저의 이미지 모델 중 최근 모델
         article_img_serializer = ArticleImageSerializer(article_img)
         return Response(article_img_serializer.data, status = status.HTTP_200_OK)
+
+
+
+class LikeView(APIView):
+    # 좋아요 한적 없으면 post 가능하게 / 있으면 아무기능 없게
+    def post(self, request, article_id):
+        article = get_object_or_404(Article, id=article_id)
+        if request.user in article.likes.all():
+            article.likes.remove(request.user)
+            return Response("unlike", status=status.HTTP_200_OK)
+        else:
+            article.likes.add(request.user)
+            return Response("like", status=status.HTTP_200_OK)
