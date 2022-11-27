@@ -64,9 +64,12 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://127.0.0.1:5500',
-]
+CORS_ALLOW_ALL_ORIGINS=True # <- 모든 호스트 허용
+
+# CORS_ALLOWED_ORIGINS = [
+#     # 'http://127.0.0.1:5500',
+#     # 'https://accounts.kakao.com'
+# ]
 
 ROOT_URLCONF = "opp.urls"
 
